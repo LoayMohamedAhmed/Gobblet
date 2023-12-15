@@ -39,7 +39,7 @@ class ImageButton(Button):
                      self.flag=False
                 self.func()  # Call the function passed in the 'event' parameter
            else:
-                #messagebox.showinfo("peaces", "you have selected all pices")
+                messagebox.showinfo("peaces", "you have selected all pices")
                 self.stop()
      def stop(self):
           # Create a new window

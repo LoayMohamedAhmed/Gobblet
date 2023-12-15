@@ -11,7 +11,7 @@ class StartPage(tk.Frame):
         label = Label(self ,image=self.background) # Change this line
         label.place(x=0, y=0, relwidth=1, relheight=1)
         
-        self.bt=button1(self,"assets\\start-button.png",(0.5,0.84),"hello",False,event=lambda: master.switch_frame(PageOne))
+        self.bt=button1(self,"assets\\start-button.png",(0.5,0.84),event=lambda: master.switch_frame(PageOne))
         self.bt.create_button()
 
 
