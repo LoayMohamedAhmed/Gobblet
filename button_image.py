@@ -6,8 +6,7 @@ import tkinter as tk
 import random
 #pip install pillow
 #pip install future
-buttons_list=[]
-my_list = [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1]
+buttons_list=[] #list for board buttons
 def randomize_list_indexes(lst):
     indexes = list(range(len(lst)))
     random.shuffle(indexes)
@@ -40,7 +39,7 @@ class ImageButton(Button):
                     self.page.change_turn()
                     self.page.chose()
                     self.page.select_piece(None)
-                    self.enable_buttons()
+                    self.enable_buttons() # enable buttons again after disabeling them
 
                else:
                     if self.pieces:
@@ -50,7 +49,7 @@ class ImageButton(Button):
                               self.page.select_piece(self.pieces[-1]) 
                               self.pieces.pop()
                               lst=randomize_list_indexes(my_list)
-                              self.disable_buttons(lst)
+                              #self.disable_buttons(lst) #disables buttons to show available options only
                     
 
                if self.pieces:
@@ -90,8 +89,9 @@ class ImageButton(Button):
           label.pack()
      
      def disable_buttons(self, lst):
-        for i in range(len(lst)):
-            if lst[i] == 0:
+        one_d_list=[element for sublist in lst for element in sublist] #convert 2d list to 1d
+        for i in range(len(one_d_list)):
+            if one_d_list[i] == False:
                 buttons_list[i].config(state=tk.DISABLED)
             else:
                 print(buttons_list)
