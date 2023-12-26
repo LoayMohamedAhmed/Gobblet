@@ -48,7 +48,7 @@ class ImageButton(Button):
                               self.page.chose()
                               self.page.select_piece(self.pieces[-1]) 
                               self.pieces.pop()
-                              lst=randomize_list_indexes(my_list)
+                              #lst=randomize_list_indexes(my_list)
                               #self.disable_buttons(lst) #disables buttons to show available options only
                     
 
