@@ -1,6 +1,7 @@
-from button_image import ImageButton
+from button_image import ImageButton,buttons_list
 from pieces import Piece
 import copy
+import tkinter as tk
 
 class Board():
     def __init__(self, root):
@@ -9,4 +10,10 @@ class Board():
         self.pieces = [Piece("assets/gray.jpg",(150,150) , -1)]
         for i in range(4):
             for j in range(4):
-                self.board.append(ImageButton(root , Pieces= copy.copy(self.pieces) ,pos=((400+j * self.small_square_size + self.small_square_size / 2 )/1500, (50+i * self.small_square_size + self.small_square_size / 2)/800),event=lambda: print(f"played"),Btype="board"))
+                newb=ImageButton(root , Pieces= copy.copy(self.pieces) ,pos=((400+j * self.small_square_size + self.small_square_size / 2 )/1500, (50+i * self.small_square_size + self.small_square_size / 2)/800),event=lambda: print(f"played"),Btype="board")
+                self.board.append(newb)
+                buttons_list.append(newb)
+
+
+
+    

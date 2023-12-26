@@ -2,9 +2,16 @@ from tkinter import *
 from tkinter import font,messagebox
 from PIL import Image, ImageTk
 from pieces import Piece
-
+import tkinter as tk
+import random
 #pip install pillow
 #pip install future
+buttons_list=[]
+my_list = [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1]
+def randomize_list_indexes(lst):
+    indexes = list(range(len(lst)))
+    random.shuffle(indexes)
+    return [lst[i] for i in indexes]
 class ImageButton(Button):
      def __init__(self, root, Pieces , pos, event , Btype):
         self.position = pos
@@ -33,6 +40,7 @@ class ImageButton(Button):
                     self.page.change_turn()
                     self.page.chose()
                     self.page.select_piece(None)
+                    self.enable_buttons()
 
                else:
                     if self.pieces:
@@ -41,6 +49,8 @@ class ImageButton(Button):
                               self.page.chose()
                               self.page.select_piece(self.pieces[-1]) 
                               self.pieces.pop()
+                              lst=randomize_list_indexes(my_list)
+                              self.disable_buttons(lst)
                     
 
                if self.pieces:
@@ -79,3 +89,15 @@ class ImageButton(Button):
           # Display the label
           label.pack()
      
+     def disable_buttons(self, lst):
+        for i in range(len(lst)):
+            if lst[i] == 0:
+                buttons_list[i].config(state=tk.DISABLED)
+            else:
+                print(buttons_list)
+                buttons_list[i].config(state=tk.NORMAL)
+
+
+     def enable_buttons(self):
+          for i in range(len(buttons_list)):
+            buttons_list[i].config(state=tk.NORMAL)
