@@ -65,6 +65,7 @@ class ImageButton(Button):
                          # Switch player in the game logic and update the GUI
                     game.switch_player()
                     self.page.change_turn()
+                    game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
                else:
                     messagebox.showinfo("Error", "This position is not available. Please choose another position.")
           else:
@@ -118,7 +119,7 @@ class ImageButton(Button):
 
           # Update the game state after each action
           #game.available_click()
-          game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
+          #game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
           # game.player1.win = game.board.check_winning(game.player1.color)
           # game.player2.win = game.board.check_winning(game.player2.color)
          
