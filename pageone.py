@@ -5,22 +5,31 @@ from button import button1
 from PIL import  Image , ImageTk
 from button_image import *
 from pieces import *
-from player import Player
-from Board import Board
+from playerGUI import PlayerGUI
+from BoardGUI import Board
 from image_label import ImageLabel
+from Algorithm import game
+
 
 class PageOne(tk.Label):
     def __init__(self, master):
-        tk.Frame.__init__(self, master)  
+        tk.Frame.__init__(self, master)
+        self.game = game.Game('w', 'b')  
         self.selected_piece = None 
         self.player_turn = 0
         self.played = True
-
+        self.out = None
+        self.out_in = None
+        self.from_i = None
+        self.from_j = None
+        self.to_i=None
+        self.to_j=None
+        self.ava_clicks=[[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]]
         self.background1 = ImageLabel(self,image_path="assets\\black.jpg",size=(1500,800),position=(0,0)) 
         self.background1.label.pack()
         self.board = ImageLabel(self,image_path="assets\\board1.png",size=(700,700),position=(0.5,0.5))
-        self.player1 = Player(self , "assets\\whiteL.png",0,[(0.95,0.2),(0.95,0.5),(0.95,0.8)])
-        self.player2 = Player(self , "assets\\blackL.png",1,[(0.05,0.2),(0.05,0.5),(0.05,0.8)])
+        self.player1 = PlayerGUI(self , "assets\\whiteL.png",0,[(0.95,0.2),(0.95,0.5),(0.95,0.8)])
+        self.player2 = PlayerGUI(self , "assets\\blackL.png",1,[(0.05,0.2),(0.05,0.5),(0.05,0.8)])
         board = Board(self)
         self.show1 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.8,0.5))
         self.show2 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.2,0.5))

@@ -12,13 +12,14 @@ def randomize_list_indexes(lst):
     random.shuffle(indexes)
     return [lst[i] for i in indexes]
 class ImageButton(Button):
-     def __init__(self, root, Pieces , pos, event , Btype):
+     def __init__(self, root, Pieces , pos, event , Btype, index=None):
         self.position = pos
         self.page = root
         self.pieces = Pieces
         self.root = root
         self.func = event
         self.Btype = Btype
+        self.index = index
         self.font = font.Font(size=20, family="Times")
         self.image = Image.open(self.pieces[-1].image_path)
         self.image = self.image.resize(self.pieces[-1].piece_size)
@@ -32,44 +33,124 @@ class ImageButton(Button):
         self.toggleState = 1
 
      def clickFunction(self, event=None):
-               
-               if self.page.selected_piece !=None and self.Btype == "board":
+          # Refer to the existing game instance
+          game = self.page.game
+          
+
+
+          # Call the appropriate methods of the game based on the user's actions
+          if self.page.selected_piece != None and self.Btype == "board":
+               # A piece is being moved to this location
+               self.page.to_i, self.page.to_j = self.index
+
+               # Check if the position the player wants to play to is available
+               if self.page.ava_clicks[self.page.to_i][self.page.to_j] == 1:
                     self.pieces.append(self.page.selected_piece)
                     self.page.selected_piece = None
-                    self.page.change_turn()
                     self.page.chose()
                     self.page.select_piece(None)
-                    self.enable_buttons() # enable buttons again after disabeling them
+                    self.enable_buttons()  # enable buttons again after disabling them
 
+                    # Call game.play_turn_to() with the appropriate parameters
+                    if game.play_turn_to(self.page.to_i, self.page.to_j):
+                         game.player1.win = game.board.check_winning(game.player1.color)
+                         game.player2.win = game.board.check_winning(game.player2.color)
+
+                         # If a player wins, display a message box
+                         if game.player1.win:
+                              messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
+                         elif game.player2.win:
+                              messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+
+                         # Switch player in the game logic and update the GUI
+                    game.switch_player()
+                    self.page.change_turn()
                else:
-                    if self.pieces:
-                         self.current_piece = self.pieces[-1]
-                         if self.current_piece.player == self.page.player_turn and self.page.played:
-                              self.page.chose()
-                              self.page.select_piece(self.pieces[-1]) 
-                              self.pieces.pop()
-                              #lst=randomize_list_indexes(my_list)
-                              #self.disable_buttons(lst) #disables buttons to show available options only
-                    
-
+                    messagebox.showinfo("Error", "This position is not available. Please choose another position.")
+          else:
                if self.pieces:
-                    self.image=self.pieces[-1].image_path
-                    self.size = self.pieces[-1].piece_size
-                    
-                    self.image = Image.open(self.image)
-                    self.image = self.image.resize(self.size)
-                    self.image = ImageTk.PhotoImage(image=self.image)
-                    self.config(image=self.image)
-                    self.func()  # Call the function passed in the 'event' parameter
-               elif self.flag:
-                    self.image = Image.open("assets\\no more.png" if self.Btype =="player" else "assets\\gray.jpg")
-                    self.image = self.image.resize((150,150))
-                    self.image = ImageTk.PhotoImage(image=self.image)
-                    self.config(image=self.image)
-                    self.flag = False
-               else:
-                    messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
-                    self.stop() if self.Btype =="player" else True
+                    self.current_piece = self.pieces[-1]
+                    if self.current_piece.player == self.page.player_turn and self.page.played:
+                         self.page.chose()
+                         self.page.select_piece(self.pieces[-1]) 
+                         self.pieces.pop()
+                         #out_in-> If you want to choose gobblet from player 0. If from the board, press 1: 
+                         #out ->index of gobblet stack player 
+                         if self.Btype == "player":
+                              print("Gobblet is choosen from player")
+                              self.page.out = self.index[0]
+                              self.page.out_in=0
+                              self.page.from_i, self.page.from_j = self.index
+                              win_flag,self.page.ava_clicks=game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
+                              # Call game.play_turn_from() with the appropriate parameters
+                              if win_flag:
+                                   game.player1.win = game.board.check_winning(game.player1.color)
+                                   game.player2.win = game.board.check_winning(game.player2.color)
+                                   
+                                   # If a player wins, display a message box
+                                   if game.player1.win:
+                                        messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
+                                   elif game.player2.win:
+                                        messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+                                   game.available_click()
+                         else:
+                              print("Gobblet is choosen from Board")
+                              self.page.out=None
+                              self.page.out_in=1
+                              self.page.from_i, self.page.from_j =self.index
+                              win_flag,self.page.ava_clicks=game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
+                              # Call game.play_turn_from() with the appropriate parameters
+                              if win_flag:
+                                   game.player1.win = game.board.check_winning(game.player1.color)
+                                   game.player2.win = game.board.check_winning(game.player2.color)
+                                  
+                                   # If a player wins, display a message box
+                                   if game.player1.win:
+                                        messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
+                                   elif game.player2.win:
+                                        messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+                                   game.available_click()
+                         
+
+               
+
+               
+
+          # Update the game state after each action
+          #game.available_click()
+          game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
+          # game.player1.win = game.board.check_winning(game.player1.color)
+          # game.player2.win = game.board.check_winning(game.player2.color)
+         
+
+          # Update the image
+          if self.pieces:
+               self.image=self.pieces[-1].image_path
+               self.size = self.pieces[-1].piece_size
+               self.image = Image.open(self.image)
+               self.image = self.image.resize(self.size)
+               self.image = ImageTk.PhotoImage(image=self.image)
+               self.config(image=self.image)
+               self.func()  # Call the function passed in the 'event' parameter
+          elif self.flag:
+               self.image = Image.open("assets\\no more.png" if self.Btype =="player" else "assets\\gray.jpg")
+               self.image = self.image.resize((150,150))
+               self.image = ImageTk.PhotoImage(image=self.image)
+               self.config(image=self.image)
+               self.flag = False
+          else:
+               messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
+               self.stop() if self.Btype =="player" else True
+          game.player1.win = game.board.check_winning(game.player1.color)
+          game.player2.win = game.board.check_winning(game.player2.color)
+          
+          # If a player wins, display a message box
+          if game.player1.win:
+               messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
+          elif game.player2.win:
+               messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+
+          print("------------------------------------------------------------")
      def stop(self):
           # Create a new window
           top = Toplevel()
