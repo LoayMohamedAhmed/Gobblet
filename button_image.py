@@ -116,7 +116,7 @@ class ImageButton(Button):
                
 
                
-
+          # This code explain game flow in ai algo
           # Update the game state after each action
           #game.available_click()
           #game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
