@@ -21,10 +21,11 @@ class ImageButton(Button):
         self.Btype = Btype
         self.index = index
         self.font = font.Font(size=20, family="Times")
-        self.image = Image.open(self.pieces[-1].image_path)
-        self.image = self.image.resize(self.pieces[-1].piece_size)
-        self.image = ImageTk.PhotoImage(image=self.image)
+        self.image = Image.open(self.pieces[-1].image_path) if not self.pieces[-1].last else self.pieces[-1].image
+        self.image = self.image.resize(self.pieces[-1].piece_size) if not self.pieces[-1].last else self.pieces[-1].image
+        self.image = ImageTk.PhotoImage(image=self.image) if not self.pieces[-1].last else self.pieces[-1].image
         self.flag=True
+        self.game = self.page.game # Refer to the existing game instance
 
         super().__init__(root, image=self.image, borderwidth=0, background="black", command=self.clickFunction, highlightthickness=0)
         self.config(activebackground="black")
@@ -33,8 +34,8 @@ class ImageButton(Button):
         self.toggleState = 1
 
      def clickFunction(self, event=None):
-          # Refer to the existing game instance
-          game = self.page.game
+          
+          
           
 
 
@@ -52,23 +53,16 @@ class ImageButton(Button):
                     self.enable_buttons()  # enable buttons again after disabling them
 
                     # Call game.play_turn_to() with the appropriate parameters
-                    if game.play_turn_to(self.page.to_i, self.page.to_j):
-                         game.player1.win = game.board.check_winning(game.player1.color)
-                         game.player2.win = game.board.check_winning(game.player2.color)
-
-                         # If a player wins, display a message box
-                         if game.player1.win:
-                              messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
-                         elif game.player2.win:
-                              messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+                    if self.game.play_turn_to(self.page.to_i, self.page.to_j):
+                         self.check_winner()
 
                          # Switch player in the game logic and update the GUI
-                    game.switch_player()
+                    self.game.switch_player()
                     self.page.change_turn()
-                    game.current_player.warn = game.board.check_warning(c=game.current_player.color,warning_list=game.current_player.warning_list)
+                    self.game.current_player.warn = self.game.board.check_warning(c=self.game.current_player.color,warning_list=self.game.current_player.warning_list)
                else:
                     messagebox.showinfo("Error", "This position is not available. Please choose another position.")
-          else:
+          else: # this condition is responsible for selecting piece either from inside or outside the board
                if self.pieces:
                     self.current_piece = self.pieces[-1]
                     if self.current_piece.player == self.page.player_turn and self.page.played:
@@ -82,35 +76,21 @@ class ImageButton(Button):
                               self.page.out = self.index[0]
                               self.page.out_in=0
                               self.page.from_i, self.page.from_j = self.index
-                              win_flag,self.page.ava_clicks=game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
+                              win_flag,self.page.ava_clicks=self.game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
                               # Call game.play_turn_from() with the appropriate parameters
                               if win_flag:
-                                   game.player1.win = game.board.check_winning(game.player1.color)
-                                   game.player2.win = game.board.check_winning(game.player2.color)
-                                   
-                                   # If a player wins, display a message box
-                                   if game.player1.win:
-                                        messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
-                                   elif game.player2.win:
-                                        messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
-                                   game.available_click()
+                                   self.check_winner()
+                                   self.game.available_click()
                          else:
                               print("Gobblet is choosen from Board")
                               self.page.out=None
                               self.page.out_in=1
                               self.page.from_i, self.page.from_j =self.index
-                              win_flag,self.page.ava_clicks=game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
+                              win_flag,self.page.ava_clicks=self.game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
                               # Call game.play_turn_from() with the appropriate parameters
                               if win_flag:
-                                   game.player1.win = game.board.check_winning(game.player1.color)
-                                   game.player2.win = game.board.check_winning(game.player2.color)
-                                  
-                                   # If a player wins, display a message box
-                                   if game.player1.win:
-                                        messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
-                                   elif game.player2.win:
-                                        messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
-                                   game.available_click()
+                                   self.check_winner()
+                                   self.game.available_click()
                          
 
                
@@ -142,14 +122,11 @@ class ImageButton(Button):
           else:
                messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
                self.stop() if self.Btype =="player" else True
-          game.player1.win = game.board.check_winning(game.player1.color)
-          game.player2.win = game.board.check_winning(game.player2.color)
+          self.game.player1.win = self.game.board.check_winning(self.game.player1.color)
+          self.game.player2.win = self.game.board.check_winning(self.game.player2.color)
           
           # If a player wins, display a message box
-          if game.player1.win:
-               messagebox.showinfo("Game Over", f"Player {game.player1.color} wins!")
-          elif game.player2.win:
-               messagebox.showinfo("Game Over", f"Player {game.player2.color} wins!")
+          self.check_winner()
 
           print("------------------------------------------------------------")
      def stop(self):
@@ -183,3 +160,16 @@ class ImageButton(Button):
      def enable_buttons(self):
           for i in range(len(buttons_list)):
             buttons_list[i].config(state=tk.NORMAL)
+     
+     def check_winner(self):
+          self.game.player1.win = self.game.board.check_winning(self.game.player1.color)
+          self.game.player2.win = self.game.board.check_winning(self.game.player2.color)
+                                   
+          # If a player wins, display a message box
+          if self.game.player1.win:
+               #messagebox.showinfo("Game Over1", f"Player {self.game.player1.color} wins!")
+               self.page.winning_messege("player 1 win")
+          elif self.game.player2.win:
+               #messagebox.showinfo("Game Over", f"Player {self.game.player2.color} wins!")
+               self.page.winning_messege("player 2 win")
+          

@@ -14,7 +14,8 @@ from Algorithm import game
 class PageOne(tk.Label):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self.game = game.Game('w', 'b')  
+        self.game = game.Game('w', 'b')
+        self.master = master  
         self.selected_piece = None 
         self.player_turn = 0
         self.played = True
@@ -56,3 +57,28 @@ class PageOne(tk.Label):
     def chose(self):
         self.played = not self.played
     
+    def winning_messege(self ,message):
+        top = Toplevel()
+        top.title("winning")
+        top.geometry("400x200")  # Set the size of the window
+
+        message = tk.Label(top, text = f"{message} \n do you want to play another game or return to start menu?")
+        message.pack()
+
+        button_frame = tk.Frame(top)
+        button_frame.pack(side=tk.BOTTOM, pady=10)  # Place the frame at the bottom of the window
+
+        buttons = []
+        self.replay_image = Image.open("assets\\replay.png")
+        self.replay_image = self.replay_image.resize((150,90))
+        self.replay_image = ImageTk.PhotoImage(image=self.replay_image)
+        replay = tk.Button(button_frame, image=self.replay_image, command=lambda : [self.master.switch_frame(PageOne) , top.destroy()],highlightthickness=0 , borderwidth=0)
+        replay.pack(side=tk.LEFT, padx=10)  # Add horizontal padding between buttons
+        buttons.append(replay)
+
+        self.top_menu_image = Image.open("assets\\start-button.png")
+        self.top_menu_image = self.top_menu_image.resize((150,100))
+        self.top_menu_image = ImageTk.PhotoImage(image=self.top_menu_image)
+        top_menu = tk.Button(button_frame, image=self.top_menu_image, command=lambda : [self.master.switch_frame(start.StartPage),top.destroy()],highlightthickness=0 , borderwidth=0)
+        top_menu.pack(side=tk.LEFT, padx=10)  # Add horizontal padding between buttons
+        buttons.append(top_menu)

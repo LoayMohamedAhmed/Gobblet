@@ -8,7 +8,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, master)   
         self.background1 = ImageLabel(self,image_path="assets\\python.jpg",size=(1500,800),position=(0.5,0.5)) 
         #self.background1.label.pack()
-        self.bt=button1(self,"assets\\start-button.png",(0.5,0.84),event=lambda: master.switch_frame(PageOne))
+        self.bt=button1(self,"assets\\start-button.png",(0.5,0.84),event=lambda: master.switch_frame(PageOne),size=(150,100))
         self.bt.create_button()
 
 

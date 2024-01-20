@@ -2,12 +2,12 @@ from tkinter import*
 from tkinter import font
 from PIL import Image, ImageTk
 class button1():
-    def __init__(self,root, image_pth , pos , event):
+    def __init__(self,root, image_pth , pos , event,size):
         self.position = pos
         self.root=root
         self.func = event
         self.image = Image.open(image_pth)
-        self.image =self.image.resize((150,100))
+        self.image =self.image.resize(size)
         self.image = ImageTk.PhotoImage(image=self.image)
         self.font= font.Font(size=20,family="Times") 
 
