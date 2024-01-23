@@ -8,13 +8,13 @@ from pieces import *
 from playerGUI import PlayerGUI
 from BoardGUI import Board
 from image_label import ImageLabel
-from Algorithm import game
+from Algorithm import game , ai_game
 
 
-class PageOne(tk.Label):
+class AI(tk.Label):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self.game = game.Game('w', 'b')
+        self.game = ai_game.AIGame('w', 'b',2)
         self.master = master  
         self.selected_piece = None 
         self.player_turn = 0
@@ -72,7 +72,7 @@ class PageOne(tk.Label):
         self.replay_image = Image.open("assets\\replay.png")
         self.replay_image = self.replay_image.resize((150,90))
         self.replay_image = ImageTk.PhotoImage(image=self.replay_image)
-        replay = tk.Button(button_frame, image=self.replay_image, command=lambda : [self.master.switch_frame(PageOne) , top.destroy()],highlightthickness=0 , borderwidth=0)
+        replay = tk.Button(button_frame, image=self.replay_image, command=lambda : [self.master.switch_frame(AI) , top.destroy()],highlightthickness=0 , borderwidth=0)
         replay.pack(side=tk.LEFT, padx=10)  # Add horizontal padding between buttons
         buttons.append(replay)
 

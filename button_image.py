@@ -26,6 +26,7 @@ class ImageButton(Button):
         self.image = ImageTk.PhotoImage(image=self.image) if not self.pieces[-1].last else self.pieces[-1].image
         self.flag=True
         self.game = self.page.game # Refer to the existing game instance
+        self.ai_coordinate = None # coordinate of ai game (from_x,from_y,to_X,to_Y)
 
 
         super().__init__(root, image=self.image, borderwidth=0, background="black", command=self.clickFunction, highlightthickness=0)
@@ -44,6 +45,8 @@ class ImageButton(Button):
           if self.page.selected_piece != None and self.Btype == "board":
                # A piece is being moved to this location
                self.page.to_i, self.page.to_j = self.index
+               #fX, fY, tX, tY = self.ai_coordinate
+               #self.Ai_move(fX,fY,tX,tY)
 
                # Check if the position the player wants to play to is available
                if self.page.ava_clicks[self.page.to_i][self.page.to_j] == 1:
@@ -79,6 +82,8 @@ class ImageButton(Button):
                               self.page.from_i, self.page.from_j = self.index
                               win_flag,self.page.ava_clicks=self.game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
                               # Call game.play_turn_from() with the appropriate parameters
+                              #self.ai_coordinate , _ = self.game.minimax_alpha_beta_pruning(2,True,True,float('-inf'),float('inf'))
+                              print(self.ai_coordinate)
                               if win_flag:
                                    self.check_winner()
                                    self.game.available_click()
@@ -88,6 +93,8 @@ class ImageButton(Button):
                               self.page.out_in=1
                               self.page.from_i, self.page.from_j =self.index
                               win_flag,self.page.ava_clicks=self.game.play_turn_from(self.page.out, self.page.from_i, self.page.from_j, self.page.out_in)
+                              #new
+                              
                               # Call game.play_turn_from() with the appropriate parameters
                               if win_flag:
                                    self.check_winner()
@@ -167,6 +174,7 @@ class ImageButton(Button):
                self.image = ImageTk.PhotoImage(image=self.image)
                self.config(image=self.image)
                self.func()  # Call the function passed in the 'event' parameter
+               return self.pieces[-1]
           elif self.flag:
                self.image = Image.open("assets\\no more.png" if self.Btype =="player" else "assets\\gray.jpg")
                self.image = self.image.resize((150,150))
@@ -176,4 +184,15 @@ class ImageButton(Button):
           else:
                messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
                self.stop() if self.Btype =="player" else True
+     def Ai_move(self, from_x , from_y , to_x , to_y):
+          if from_y==6:
+             self.page.player2.pl_pieces[from_x].pieces.pop()
+             Piece = self.page.player2.pl_pieces[from_x].change_image()
+             self.page.board.board[to_x][to_y].pieces.append(Piece)
+             self.page.board.board[to_x][to_y].change_image()
+          else:
+             self.page.board.board[from_x][from_y].pieces.pop()
+             Piece = self.page.board.board[from_x][from_y].change_image()
+             self.page.board.board[to_x][to_y].pieces.append(Piece)
+             self.page.board.board[to_x][to_y].change_image()
           

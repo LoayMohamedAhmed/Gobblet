@@ -8,5 +8,5 @@ class PlayerGUI():
         self.stack1 = ImageButton(root , Pieces= self.s[0] ,pos=pos[0],event=lambda: print(f"player {player_type}"),Btype="player", index=(0,-1))
         self.stack2 = ImageButton(root , Pieces= self.s[1] ,pos=pos[1],event=lambda: print(f"player {player_type}"),Btype="player", index=(1,-1))
         self.stack3 = ImageButton(root , Pieces= self.s[2] ,pos=pos[2],event=lambda: print(f"player {player_type}"),Btype="player", index=(2,-1))
-    
+        self.pl_pieces = [self.stack1 , self.stack2 , self.stack3]
     

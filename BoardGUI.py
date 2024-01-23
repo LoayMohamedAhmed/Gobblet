@@ -16,10 +16,12 @@ class Board():
         self.pieces = [Piece(self.image_path,(150,150) , -1 , True,self.image)]
         
         for i in range(4):
+            self.temp =[]
             for j in range(4):
                 newb=ImageButton(root , Pieces= copy.copy(self.pieces) ,pos=((400+j * self.small_square_size + self.small_square_size / 2 )/1500, (50+i * self.small_square_size + self.small_square_size / 2)/800),event=lambda: print(f"played"),Btype="board", index=(i,j))
-                self.board.append(newb)
+                self.temp.append(newb)
                 buttons_list.append(newb) # add board buttons to list
+            self.board.append(self.temp)
 
 
 
