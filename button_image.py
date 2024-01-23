@@ -27,6 +27,7 @@ class ImageButton(Button):
         self.flag=True
         self.game = self.page.game # Refer to the existing game instance
 
+
         super().__init__(root, image=self.image, borderwidth=0, background="black", command=self.clickFunction, highlightthickness=0)
         self.config(activebackground="black")
         self.place(relx=self.position[0], rely=self.position[1], anchor=CENTER)
@@ -105,23 +106,7 @@ class ImageButton(Button):
          
 
           # Update the image
-          if self.pieces:
-               self.image=self.pieces[-1].image_path
-               self.size = self.pieces[-1].piece_size
-               self.image = Image.open(self.image)
-               self.image = self.image.resize(self.size)
-               self.image = ImageTk.PhotoImage(image=self.image)
-               self.config(image=self.image)
-               self.func()  # Call the function passed in the 'event' parameter
-          elif self.flag:
-               self.image = Image.open("assets\\no more.png" if self.Btype =="player" else "assets\\gray.jpg")
-               self.image = self.image.resize((150,150))
-               self.image = ImageTk.PhotoImage(image=self.image)
-               self.config(image=self.image)
-               self.flag = False
-          else:
-               messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
-               self.stop() if self.Btype =="player" else True
+          self.change_image()
           self.game.player1.win = self.game.board.check_winning(self.game.player1.color)
           self.game.player2.win = self.game.board.check_winning(self.game.player2.color)
           
@@ -172,4 +157,23 @@ class ImageButton(Button):
           elif self.game.player2.win:
                #messagebox.showinfo("Game Over", f"Player {self.game.player2.color} wins!")
                self.page.winning_messege("player 2 win")
+
+     def change_image(self):
+          if self.pieces:
+               self.image=self.pieces[-1].image_path
+               self.size = self.pieces[-1].piece_size
+               self.image = Image.open(self.image)
+               self.image = self.image.resize(self.size)
+               self.image = ImageTk.PhotoImage(image=self.image)
+               self.config(image=self.image)
+               self.func()  # Call the function passed in the 'event' parameter
+          elif self.flag:
+               self.image = Image.open("assets\\no more.png" if self.Btype =="player" else "assets\\gray.jpg")
+               self.image = self.image.resize((150,150))
+               self.image = ImageTk.PhotoImage(image=self.image)
+               self.config(image=self.image)
+               self.flag = False
+          else:
+               messagebox.showinfo("peaces", "you have selected all pices") if self.Btype =="player" else True
+               self.stop() if self.Btype =="player" else True
           

@@ -1,7 +1,7 @@
 from tkinter import *
 from button import button1
 from PIL import  Image , ImageTk
-from pageone import*
+from hVSh import*
 from image_label import ImageLabel
 class StartPage(tk.Frame):
     def __init__(self, master):
