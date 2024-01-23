@@ -79,7 +79,7 @@ class AIGame(Game):
         return available_gobblets
 
 def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_time: bool, alpha: float, beta: float) -> float:
-
+ 
 
     if temp_depth == 0 or self.board.check_winning(self.player1.color) or self.board.check_winning(self.player2.color) :
         return self.evaluate.evaluate_board()
@@ -116,7 +116,7 @@ def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_
                         self.board.stacks[temp_pair[0]][temp_pair[1]].pop()
                         self.board.stacks[i][j].push(temp_gobblet)
 
-                        score = minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta)
+                        _,score = minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta)
 
                         self.board.stacks[i][j].pop()
                         self.board.stacks[temp_pair[0]][temp_pair[1]].push(temp_gobblet)
@@ -186,12 +186,14 @@ def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_
                 temp_gobblet = self.player1.stacks[final_frm_i].top()
                 self.player1.stacks[final_frm_i].pop()
                 self.board.stacks[final_to_i][final_to_j].push(temp_gobblet)
+                return (final_frm_i, final_frm_j, final_to_i, final_to_j), final_score
             else:
                 print("from inner")
                 print(f"score from  board ({final_frm_i},{final_frm_j}), to board ({final_to_i},{final_to_j}), with final Score: {final_score}")
                 temp_gobblet = self.board.stacks[final_frm_i][final_frm_j].top()
                 self.board.stacks[final_frm_i][final_frm_j].pop()
                 self.board.stacks[final_to_i][final_to_j].push(temp_gobblet)
+                return (final_frm_i, final_frm_j, final_to_i, final_to_j), final_score
             print("\n\n")
 
     else:  # isMinimizing
@@ -278,5 +280,5 @@ def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_
                         if beta <= alpha:
                             cut_off = True
                             break
-
-    return final_score
+  
+    return (0,0,0,0), final_score
