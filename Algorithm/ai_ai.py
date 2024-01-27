@@ -1,7 +1,8 @@
 from ai_game import AIGame
 
 class Ai_Ai(AIGame):
-    def __init__(self, depth_1: int, depth_2: int,):
+    def _init_(self, depth_1: int, depth_2: int):
+        super()._init_('w','b',0)
         self.player1.color = 'w'
         self.player2.color = 'b'
     
