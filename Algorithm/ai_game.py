@@ -16,7 +16,7 @@ class AIGame(Game):
             if self.current_player is self.player1:
                 temp_depth = self.depth
                 print("Cccccccccccccccc")
-                _,score = self.minimax_alpha_beta_pruning(self=self,temp_depth= temp_depth, is_maximizing=True, first_time=True, alpha=float('-inf'), beta=float('inf'))
+                _,score = self.minimax_alpha_beta_pruning(self=self,temp_depth= temp_depth, is_maximizing=True, first_time=True, alpha=float('-inf'), beta=float('inf'), flag=True)
                 print("aaaaaaaaaaaaaaaaa")
                 self.switch_player()
                 self.show_board_player()
@@ -78,10 +78,20 @@ class AIGame(Game):
 
         return available_gobblets
 
-    def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_time: bool, alpha: float, beta: float) -> float:
+    def minimax_alpha_beta_pruning(self,temp_depth: int, is_maximizing: bool, first_time: bool, alpha: float, beta: float, flag: bool) -> float:
 
-        if temp_depth == 0 or self.board.check_winning(self.player1.color) or self.board.check_winning(self.player2.color) :
-            return self.evaluate.evaluate_board()
+        if flag:
+            ai_player = self.player1
+            oppo_player = self.player2
+        else:
+            ai_player = self.player2
+            oppo_player = self.player1
+
+        if temp_depth == 0 or self.board.check_winning(ai_player.color) or self.board.check_winning(oppo_player.color) :
+            if flag:
+                return self.evaluate.evaluate_board()
+            else:
+                return -1 * self.evaluate.evaluate_board()
         
         final_score = 0.0
         cut_off = False
@@ -91,8 +101,8 @@ class AIGame(Game):
             #final_to_i, final_to_j, final_frm_i, final_frm_j = 0, 0, 0, 5
 
             # make a fun to return (index pair<i ,j>) number a available gobblet in board and out
-            available_gobblets_frm_board = self.get_available_AI_move_board(self.player1)
-            available_gobblets_frm_stack = self.get_available_AI_move_stack(self.player1)
+            available_gobblets_frm_board = self.get_available_AI_move_board(ai_player)
+            available_gobblets_frm_stack = self.get_available_AI_move_stack(ai_player)
 
             # make two for loop, first to iterate on move_board, second move_stack
             for x in range(len(available_gobblets_frm_board)):
@@ -115,7 +125,7 @@ class AIGame(Game):
                             self.board.stacks[temp_pair[0]][temp_pair[1]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta)
+                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
 
                             self.board.stacks[i][j].pop()
                             self.board.stacks[temp_pair[0]][temp_pair[1]].push(temp_gobblet)
@@ -133,16 +143,16 @@ class AIGame(Game):
                             if beta <= alpha:
                                 cut_off = True
                                 break
-
-            self.player1.warn = self.board.check_warning(self.player1.color, self.player1.warning_list)
-
+                           
+            ai_player.warn = self.board.check_warning(ai_player.color, ai_player.warning_list)
+ 
             for x in range(len(available_gobblets_frm_stack)):
                 if cut_off:
                     break
-                temp_length = self.player1.stacks[available_gobblets_frm_stack[x]].top().length
+                temp_length = ai_player.stacks[available_gobblets_frm_stack[x]].top().length
 
-                if self.player1.warn:
-                    if not self.board.suggest_cells_case_21(temp_length, self.player1.warning_list):
+                if ai_player.warn:
+                    if not self.board.suggest_cells_case_21(temp_length, ai_player.warning_list):
                         break
                 else:
                     if not self.board.suggest_cells_case_20(temp_length):
@@ -154,14 +164,14 @@ class AIGame(Game):
                         break
                     for j in range(4):
                         if temp_board_flags[i][j] == True:
-                            temp_gobblet = self.player1.stacks[available_gobblets_frm_stack[x]].top()
-                            self.player1.stacks[available_gobblets_frm_stack[x]].pop()
+                            temp_gobblet = ai_player.stacks[available_gobblets_frm_stack[x]].top()
+                            ai_player.stacks[available_gobblets_frm_stack[x]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta)
+                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
 
                             self.board.stacks[i][j].pop()
-                            self.player1.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)
+                            ai_player.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)
 
                             if score > final_score:
                                 final_score = score # use it as a flag to know if it get from out ir board
@@ -182,8 +192,8 @@ class AIGame(Game):
                 if final_frm_j == 6:
                     print("from outer")
                     print(f"score from  out ( {final_frm_i} ), to board ({final_to_i},{final_to_j}), with final Score: {final_score}")
-                    temp_gobblet = self.player1.stacks[final_frm_i].top()
-                    self.player1.stacks[final_frm_i].pop()
+                    temp_gobblet = ai_player.stacks[final_frm_i].top()
+                    ai_player.stacks[final_frm_i].pop()
                     self.board.stacks[final_to_i][final_to_j].push(temp_gobblet)
                     return (final_frm_i, final_frm_j, final_to_i, final_to_j), final_score
                 else:
@@ -200,8 +210,8 @@ class AIGame(Game):
             final_score = float('inf')
             #final_to_i, final_to_j, final_frm_i, final_frm_j = 0, 0, 0, 5
 
-            available_gobblets_frm_board = self.get_available_AI_move_board(self.player2)
-            available_gobblets_frm_stack = self.get_available_AI_move_stack(self.player2)
+            available_gobblets_frm_board = self.get_available_AI_move_board(oppo_player)
+            available_gobblets_frm_stack = self.get_available_AI_move_stack(oppo_player)
 
             # make two for loop, first to iterate on move_board, second move_stack
             for x in range(len(available_gobblets_frm_board)):
@@ -223,7 +233,7 @@ class AIGame(Game):
                             self.board.stacks[temp_pair[0]][temp_pair[1]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta)
+                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
                             
                             self.board.stacks[i][j].pop()
                             self.board.stacks[temp_pair[0]][temp_pair[1]].push(temp_gobblet)
@@ -239,16 +249,16 @@ class AIGame(Game):
                                 cut_off = True
                                 break
 
-            self.player2.warn = self.board.check_warning(self.player2.color, self.player2.warning_list)
+            oppo_player.warn = self.board.check_warning(oppo_player.color, oppo_player.warning_list)
 
 
             for x in range(len(available_gobblets_frm_stack)):
                 if cut_off:
                     break
-                temp_length = self.player2.stacks[available_gobblets_frm_stack[x]].top().length
+                temp_length = oppo_player.stacks[available_gobblets_frm_stack[x]].top().length
 
-                if self.player2.warn:
-                    if not self.board.suggest_cells_case_21(temp_length, self.player2.warning_list):
+                if oppo_player.warn:
+                    if not self.board.suggest_cells_case_21(temp_length, oppo_player.warning_list):
                         break
                 else:
                     if not self.board.suggest_cells_case_20(temp_length):
@@ -260,14 +270,14 @@ class AIGame(Game):
                         break
                     for j in range(4):
                         if temp_board_flags[i][j] == True:
-                            temp_gobblet = self.player2.stacks[available_gobblets_frm_stack[x]].top()
-                            self.player2.stacks[available_gobblets_frm_stack[x]].pop()
+                            temp_gobblet = oppo_player.stacks[available_gobblets_frm_stack[x]].top()
+                            oppo_player.stacks[available_gobblets_frm_stack[x]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta)
+                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
                             
                             self.board.stacks[i][j].pop()
-                            self.player2.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)
+                            oppo_player.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)
 
                             if score < final_score:
                                 final_score = score
@@ -279,5 +289,5 @@ class AIGame(Game):
                             if beta <= alpha:
                                 cut_off = True
                                 break
-    
+
         return (0,0,0,0), final_score
