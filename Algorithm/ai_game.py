@@ -89,9 +89,9 @@ class AIGame(Game):
 
         if temp_depth == 0 or self.board.check_winning(ai_player.color) or self.board.check_winning(oppo_player.color) :
             if flag:
-                return self.evaluate.evaluate_board()
+                return (0,0,0,0),self.evaluate.evaluate_board()
             else:
-                return -1 * self.evaluate.evaluate_board()
+                return (0,0,0,0) ,-1 * self.evaluate.evaluate_board()
         
         final_score = 0.0
         cut_off = False
@@ -125,7 +125,7 @@ class AIGame(Game):
                             self.board.stacks[temp_pair[0]][temp_pair[1]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
+                            _,score = self.minimax_alpha_beta_pruning( temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
 
                             self.board.stacks[i][j].pop()
                             self.board.stacks[temp_pair[0]][temp_pair[1]].push(temp_gobblet)
@@ -168,7 +168,7 @@ class AIGame(Game):
                             ai_player.stacks[available_gobblets_frm_stack[x]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
+                            _,score = self.minimax_alpha_beta_pruning( temp_depth = temp_depth - 1, is_maximizing = False, first_time = False,alpha= alpha, beta=beta, flag=flag)
 
                             self.board.stacks[i][j].pop()
                             ai_player.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)
@@ -233,7 +233,7 @@ class AIGame(Game):
                             self.board.stacks[temp_pair[0]][temp_pair[1]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
+                            _,score = self.minimax_alpha_beta_pruning(temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
                             
                             self.board.stacks[i][j].pop()
                             self.board.stacks[temp_pair[0]][temp_pair[1]].push(temp_gobblet)
@@ -274,7 +274,7 @@ class AIGame(Game):
                             oppo_player.stacks[available_gobblets_frm_stack[x]].pop()
                             self.board.stacks[i][j].push(temp_gobblet)
 
-                            _,score = self.minimax_alpha_beta_pruning(self = self, temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
+                            _,score = self.minimax_alpha_beta_pruning( temp_depth = temp_depth - 1, is_maximizing = True, first_time = False,alpha= alpha, beta=beta, flag=flag)
                             
                             self.board.stacks[i][j].pop()
                             oppo_player.stacks[available_gobblets_frm_stack[x]].push(temp_gobblet)

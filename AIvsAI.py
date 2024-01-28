@@ -8,17 +8,15 @@ from pieces import *
 from playerGUI import PlayerGUI
 from BoardGUI import Board
 from image_label import ImageLabel
-from Algorithm import game
+from Algorithm import ai_ai
 
 
-class PageOne(tk.Label):
-    def __init__(self, master ,p1_img="assets\\player.png" ,p2_img="assets\\player.png"):
+class AIvsAI(tk.Label):
+    def __init__(self, master ,levels):
         tk.Frame.__init__(self, master)
-        self.game = game.Game('w', 'b')
-        self.master = master 
-        self.mode ="human_mode" 
-        self.p1_img_dir =p1_img
-        self.p2_img_dir =p2_img
+        self.game = ai_ai.Ai_Ai(levels[0],levels[1])
+        self.master = master  
+        self.mode ="AI_vs_AI"
         self.selected_piece = None 
         self.player_turn = 0
         self.played = True
@@ -35,13 +33,12 @@ class PageOne(tk.Label):
         self.player1 = PlayerGUI(self , "assets\\whiteL.png",0,[(0.95,0.2),(0.95,0.5),(0.95,0.8)])
         self.player2 = PlayerGUI(self , "assets\\blackL.png",1,[(0.05,0.2),(0.05,0.5),(0.05,0.8)])
         self.board = Board(self)
-        self.player1_image = ImageLabel(self,image_path=p1_img,size=(200,300), position= (0.82,0.4))
-        self.player2_image = ImageLabel(self,image_path=p2_img,size=(200,300), position= (0.18,0.4))
-
-        self.show1 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.82,0.7))
-        self.show2 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.18,0.7))
+        self.show1 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.8,0.5))
+        self.show2 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.2,0.5))
+        self.bt1 = button1(self,"assets\\fox.png",(0.8,0.2),event= self.ai_vs_ai,size=(150,100))
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(start.StartPage)).pack()
+        
         
     def select_piece(self , piece):
         if piece != None:
@@ -78,7 +75,7 @@ class PageOne(tk.Label):
         self.replay_image = Image.open("assets\\replay.png")
         self.replay_image = self.replay_image.resize((150,90))
         self.replay_image = ImageTk.PhotoImage(image=self.replay_image)
-        replay = tk.Button(button_frame, image=self.replay_image, command=lambda : [self.master.switch_frame(PageOne) , top.destroy()],highlightthickness=0 , borderwidth=0)
+        replay = tk.Button(button_frame, image=self.replay_image, command=lambda : [self.master.switch_frame(AIvsAI) , top.destroy()],highlightthickness=0 , borderwidth=0)
         replay.pack(side=tk.LEFT, padx=10)  # Add horizontal padding between buttons
         buttons.append(replay)
 
@@ -88,3 +85,41 @@ class PageOne(tk.Label):
         top_menu = tk.Button(button_frame, image=self.top_menu_image, command=lambda : [self.master.switch_frame(start.StartPage),top.destroy()],highlightthickness=0 , borderwidth=0)
         top_menu.pack(side=tk.LEFT, padx=10)  # Add horizontal padding between buttons
         buttons.append(top_menu)
+    
+    def ai_vs_ai(self):
+               if self.player_turn==0:
+                    (self.from_x, self.from_y, self.to_x , self.to_y),_ = self.game.get_player1_move()
+                    self.Ai_move1(self.from_x , self.from_y , self.to_x ,self.to_y,self.player1)
+                    self.check_winner()
+                    self.change_turn()
+               else:
+                    (self.from_x, self.from_y, self.to_x,self.to_y) ,_ = self.game.get_player2_move()
+                    self.Ai_move1(self.from_x , self.from_y , self.to_x ,self.to_y,self.player2)
+                    self.check_winner()
+                    self.change_turn()
+        
+    
+    def Ai_move1(self, from_x , from_y , to_x , to_y, player):
+          if from_y==6:
+             Piece = player.pl_pieces[from_x].pieces.pop()
+             player.pl_pieces[from_x].change_image()
+             self.board.board[to_x][to_y].pieces.append(Piece)
+             self.board.board[to_x][to_y].change_image()
+          else:
+             Piece = self.board.board[from_x][from_y].pieces.pop()
+             self.board.board[from_x][from_y].change_image()
+             self.board.board[to_x][to_y].pieces.append(Piece)
+             self.board.board[to_x][to_y].change_image()
+    
+    def check_winner(self):
+          self.game.player1.win = self.game.board.check_winning(self.game.player1.color)
+          self.game.player2.win = self.game.board.check_winning(self.game.player2.color)
+                                   
+          # If a player wins, display a message box
+          if self.game.player1.win:
+               #messagebox.showinfo("Game Over1", f"Player {self.game.player1.color} wins!")
+               self.winning_messege("player 1 win")
+          elif self.game.player2.win:
+               #messagebox.showinfo("Game Over", f"Player {self.game.player2.color} wins!")
+               self.winning_messege("player 2 win")
+
