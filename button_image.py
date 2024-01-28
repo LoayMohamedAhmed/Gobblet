@@ -4,6 +4,8 @@ from PIL import Image, ImageTk
 from pieces import Piece
 import tkinter as tk
 import random
+from winning import winninig
+
 #pip install pillow
 #pip install future
 buttons_list=[] #list for board buttons
@@ -165,11 +167,10 @@ class ImageButton(Button):
                                    
           # If a player wins, display a message box
           if self.game.player1.win:
-               #messagebox.showinfo("Game Over1", f"Player {self.game.player1.color} wins!")
-               self.page.winning_messege("player 1 win")
+               self.master.master.switch_to_winning(1, self.page.p1_img_dir if self.page.mode != "AI_VS_AI" else "assets\\robot1.png")
           elif self.game.player2.win:
-               #messagebox.showinfo("Game Over", f"Player {self.game.player2.color} wins!")
-               self.page.winning_messege("player 2 win")
+               self.master.master.switch_to_winning(2, self.page.p2_img_dir if self.page.mode != "AI_VS_AI" else "assets\\robot2.png")
+
 
      def change_image(self):
           if self.pieces:
@@ -201,4 +202,5 @@ class ImageButton(Button):
              self.page.board.board[from_x][from_y].change_image()
              self.page.board.board[to_x][to_y].pieces.append(Piece)
              self.page.board.board[to_x][to_y].change_image()
+     
           

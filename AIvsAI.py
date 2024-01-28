@@ -35,7 +35,7 @@ class AIvsAI(tk.Label):
         self.board = Board(self)
         self.show1 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.8,0.5))
         self.show2 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.2,0.5))
-        self.bt1 = button1(self,"assets\\fox.png",(0.8,0.2),event= self.ai_vs_ai,size=(150,100))
+        self.bt1 = button1(self,"assets\\button2.png",(0.8,0.2),event= self.ai_vs_ai,size=(150,100))
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(start.StartPage)).pack()
         
@@ -117,9 +117,8 @@ class AIvsAI(tk.Label):
                                    
           # If a player wins, display a message box
           if self.game.player1.win:
-               #messagebox.showinfo("Game Over1", f"Player {self.game.player1.color} wins!")
-               self.winning_messege("player 1 win")
+               self.master.switch_to_winning(1,  "assets\\robot1.png")
           elif self.game.player2.win:
-               #messagebox.showinfo("Game Over", f"Player {self.game.player2.color} wins!")
-               self.winning_messege("player 2 win")
+               self.master.switch_to_winning(2,  "assets\\robot2.png")
+
 

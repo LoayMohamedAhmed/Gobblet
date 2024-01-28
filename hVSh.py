@@ -12,13 +12,13 @@ from Algorithm import game
 
 
 class PageOne(tk.Label):
-    def __init__(self, master ,p1_img="assets\\player.png" ,p2_img="assets\\player.png"):
+    def __init__(self, master ,images = ("assets\\player.png" ,"assets\\player.png")):
         tk.Frame.__init__(self, master)
         self.game = game.Game('w', 'b')
         self.master = master 
         self.mode ="human_mode" 
-        self.p1_img_dir =p1_img
-        self.p2_img_dir =p2_img
+        self.p1_img_dir =images[0]
+        self.p2_img_dir =images[1]
         self.selected_piece = None 
         self.player_turn = 0
         self.played = True
@@ -35,8 +35,8 @@ class PageOne(tk.Label):
         self.player1 = PlayerGUI(self , "assets\\whiteL.png",0,[(0.95,0.2),(0.95,0.5),(0.95,0.8)])
         self.player2 = PlayerGUI(self , "assets\\blackL.png",1,[(0.05,0.2),(0.05,0.5),(0.05,0.8)])
         self.board = Board(self)
-        self.player1_image = ImageLabel(self,image_path=p1_img,size=(200,300), position= (0.82,0.4))
-        self.player2_image = ImageLabel(self,image_path=p2_img,size=(200,300), position= (0.18,0.4))
+        self.player1_image = ImageLabel(self,image_path=images[0],size=(200,300), position= (0.82,0.4))
+        self.player2_image = ImageLabel(self,image_path=images[1],size=(200,300), position= (0.18,0.4))
 
         self.show1 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.82,0.7))
         self.show2 = ImageLabel(self,image_path="assets\\gray.jpg",size=(150,150), position= (0.18,0.7))

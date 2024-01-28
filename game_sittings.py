@@ -1,7 +1,7 @@
-from tkinter import *
+import tkinter as tk
 
 from button import button1
-from hVSh import *
+import hVSh
 from image_label import ImageLabel
 from tkinter import filedialog
 from AI_mode import AI
@@ -55,7 +55,7 @@ class sitting(tk.Label):
                 self.player2_image = "assets\\player.png"
             if self.player1_image == None:
                 self.player1_image = "assets\\player.png"
-            self.start_b = button1(self,"assets\\button2.png",(0.5,0.7),event=lambda: self.master.switch_frame(PageOne ,self.player1_image ,self.player2_image),size=(150,100))
+            self.start_b = button1(self,"assets\\button2.png",(0.5,0.7),event=lambda: self.master.switch_frame(hVSh.PageOne ,(self.player1_image ,self.player2_image)),size=(150,100))
         elif choice == "1 vs AI":
             self.start_b.destroy_button() if self.start_b != None else True
             self.level_option = tk.OptionMenu(self, self.selected_level , *self.levels , command=self.control_level)
@@ -83,21 +83,21 @@ class sitting(tk.Label):
             if self.player1_image == None:
                 self.player1_image = "assets\\player.png"
             self.start_b.destroy_button() if self.start_b != None else True
-            self.start_b=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , self.level["easy"],self.player1_image ,self.player2_image),size=(150,100))
+            self.start_b=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , (self.level["easy"],(self.player1_image ,self.player2_image))),size=(150,100))
         elif choice == "meduim":
             if self.player2_image == None:
                 self.player2_image = "assets\\player.png"
             if self.player1_image == None:
                 self.player1_image = "assets\\player.png"
             self.start_b.destroy_button() if self.start_b != None else True
-            self.strat=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , self.level["meduim"],self.player1_image ,self.player2_image),size=(150,100))
+            self.strat=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , (self.level["meduim"],(self.player1_image ,self.player2_image))),size=(150,100))
         else:
              if self.player2_image == None:
                 self.player2_image = "assets\\player.png"
              if self.player1_image == None:
                 self.player1_image = "assets\\player.png"
              self.start_b.destroy_button() if self.start_b != None else True
-             self.start_b=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , self.level["hard"],self.player1_image ,self.player2_image),size=(150,100))
+             self.start_b=button1(self,"assets\\button2.png",(0.5,0.8),event=lambda: self.master.switch_frame(AI , (self.level["hard"],(self.player1_image ,self.player2_image))),size=(150,100))
     
     def control_levelAI1(self ,choice):
         if choice == "eaasy":

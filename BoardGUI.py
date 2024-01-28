@@ -1,4 +1,4 @@
-from button_image import ImageButton,buttons_list
+import button_image as b
 from pieces import Piece
 import copy
 import tkinter as tk
@@ -18,9 +18,9 @@ class Board():
         for i in range(4):
             self.temp =[]
             for j in range(4):
-                newb=ImageButton(root , Pieces= copy.copy(self.pieces) ,pos=((400+j * self.small_square_size + self.small_square_size / 2 )/1500, (50+i * self.small_square_size + self.small_square_size / 2)/800),event=lambda: print(f"played"),Btype="board", index=(i,j))
+                newb=b.ImageButton(root , Pieces= copy.copy(self.pieces) ,pos=((400+j * self.small_square_size + self.small_square_size / 2 )/1500, (50+i * self.small_square_size + self.small_square_size / 2)/800),event=lambda: print(f"played"),Btype="board", index=(i,j))
                 self.temp.append(newb)
-                buttons_list.append(newb) # add board buttons to list
+                b.buttons_list.append(newb) # add board buttons to list
             self.board.append(self.temp)
 
 
